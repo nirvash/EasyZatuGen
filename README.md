@@ -12,7 +12,7 @@ Geforce RTX 3060 **VRAM 12GB** 以上を搭載した Widows PC で簡単に動�
 画像生成なしでセリフの生成と読み上げのみなら **VRAM 8GB** で動作します（`[画像生成]-[画像を生成する]` を無効）。  
 未成年の方は利用しないでください。
 
-1. [Install-EasyZatuGen.bat](https://github.com/Zuntan03/EasyZatuGen/raw/main/EasyZatuGen/setup/Install-EasyZatuGen.bat) を右クリックから保存して、インストール先のフォルダで実行します。  
+1. [Install-EasyZatuGen.bat](https://github.com/nirvash/EasyZatuGen/raw/main/EasyZatuGen/setup/Install-EasyZatuGen.bat) を右クリックから保存して、インストール先のフォルダで実行します。  
  **インストール先のフォルダは、スペースを含まない英数字のみの浅いパス (`C:\EasyZatuGen\` など) にしてください。**
 	- **`WindowsによってPCが保護されました` と表示されたら、`詳細表示` から `実行` します。**
 	- ファイルの配布元を `Ctrl+Click` で確認して、問題がなければ `y` を入力してください。
