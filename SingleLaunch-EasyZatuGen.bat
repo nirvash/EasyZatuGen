@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 > NUL
-set CURL_CMD=C:\Windows\System32\curl.exe
+set CURL_CMD=C:\Windows\System32\curl.exe -k 
 pushd %~dp0
 call venv\Scripts\activate.bat
 
