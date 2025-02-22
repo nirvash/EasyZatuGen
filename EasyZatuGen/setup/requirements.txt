@@ -1,8 +1,9 @@
 ﻿diffusers==0.32.2
-transformers==4.49.0
-accelerate==0.25.0
+transformers==4.47.1
+accelerate==0.33.0
 omegaconf==2.3.0
-autoawq==0.1.8
+autoawq==0.2.6
 Pillow==9.3.0
 pyperclip==1.8.2
 tkinterdnd2==0.3.0
+numpy==1.26.4
