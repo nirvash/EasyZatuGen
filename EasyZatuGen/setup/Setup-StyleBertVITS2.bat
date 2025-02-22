@@ -66,10 +66,9 @@ if %errorlevel% neq 0 ( popd & exit /b 1 )
 call :DL_HF_MODEL kaunista/kaunista-style-bert-vits2-models Anneli-nsfw Anneli-nsfw Anneli-nsfw_e300_s5100
 if %errorlevel% neq 0 ( popd & exit /b 1 )
 
-if not exist config.yml (
-	echo copy %~dp0res\config.yml .
-	copy %~dp0res\config.yml .
-)
+echo copy /Y %~dp0StyleBertVITS2-config.yml config.yml
+copy /Y %~dp0StyleBertVITS2-config.yml config.yml
+if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
 
 popd
 exit /b 0
