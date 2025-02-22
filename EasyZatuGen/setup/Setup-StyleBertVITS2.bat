@@ -2,7 +2,7 @@
 chcp 65001 > NUL
 pushd %~dp0..\lib
 set PS_CMD=PowerShell -Version 5.1 -ExecutionPolicy Bypass
-set CURL_CMD=C:\Windows\System32\curl.exe
+set CURL_CMD=C:\Windows\System32\curl.exe -k 
 
 @REM 2024-01-15
 set STYLE_BERT_VITS2_REV=972ec0e627976e928428e1902334a2dd591477ea

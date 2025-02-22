@@ -9,6 +9,7 @@ if not exist %CURL_CMD% (
 	echo [ERROR] %CURL_CMD% が見つかりません。
 	pause & exit /b 1
 )
+set CURL_CMD=C:\Windows\System32\curl.exe -k 
 
 
 if not exist %PYTHON_DIR%\ (

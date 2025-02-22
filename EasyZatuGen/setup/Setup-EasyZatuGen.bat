@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 > NUL
-set CURL_CMD=C:\Windows\System32\curl.exe
+set CURL_CMD=C:\Windows\System32\curl.exe -k 
 @REM set PS_CMD=PowerShell -Version 5.1 -ExecutionPolicy Bypass
 
 if not exist %~dp0..\lib\ ( mkdir %~dp0..\lib )
@@ -57,8 +57,8 @@ if %errorlevel% neq 0 (
 
 set FFMPEG_DIR=%~dp0..\lib\ffmpeg-master-latest-win64-gpl
 if not exist %FFMPEG_DIR%\ (
-	echo curl -Lo %~dp0..\lib\ffmpeg.zip https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
-	curl -Lo %~dp0..\lib\ffmpeg.zip https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
+	echo %CURL_CMD% -Lo %~dp0..\lib\ffmpeg.zip https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
+	%CURL_CMD% -Lo %~dp0..\lib\ffmpeg.zip https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
 	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
 
 	%PS_CMD% Expand-Archive -Path %~dp0..\lib\ffmpeg.zip -DestinationPath %~dp0..\lib -Force

@@ -8,6 +8,7 @@ if not exist %CURL_CMD% (
 	echo [ERROR] %CURL_CMD% が見つかりません。
 	pause & popd & exit /b 1
 )
+set CURL_CMD=C:\Windows\System32\curl.exe -k 
 
 echo 以下の配布元から関連ファイルをダウンロードして使用します（URL を Ctrl + クリックで開けます）。
 echo.
@@ -37,7 +38,7 @@ set EASY_ZATU_GEN_DIR=EasyZatuGen-main
 if not exist EasyZatuGen\lib\ ( mkdir EasyZatuGen\lib )
 
 %CURL_CMD% -Lo EasyZatuGen\lib\EasyZatuGen.zip^
-	https://github.com/Zuntan03/EasyZatuGen/archive/refs/heads/main.zip
+	https://github.com/nirvash/EasyZatuGen/archive/refs/heads/main.zip
 if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
 
 %PS_CMD% Expand-Archive -Path EasyZatuGen\lib\EasyZatuGen.zip -DestinationPath EasyZatuGen\lib -Force
