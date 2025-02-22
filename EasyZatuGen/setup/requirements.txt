@@ -1,5 +1,5 @@
-﻿diffusers==0.24.0
-transformers==4.36.2
+﻿diffusers==0.32.2
+transformers==4.49.0
 accelerate==0.25.0
 omegaconf==2.3.0
 autoawq==0.1.8

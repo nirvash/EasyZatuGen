@@ -74,8 +74,8 @@ if not exist venv\Scripts\ffplay.exe (
 	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
 )
 
-echo pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2+cu121 xformers==0.0.23.post1 --index-url https://download.pytorch.org/whl/cu121
-pip install torch==2.1.2+cu121 torchvision==0.16.2+cu121 torchaudio==2.1.2+cu121 xformers==0.0.23.post1 --index-url https://download.pytorch.org/whl/cu121
+echo pip install torch==2.3.1+cu121 torchvision torchaudio xformers --index-url https://download.pytorch.org/whl/cu121
+pip install torch==2.3.1+cu121 torchvision torchaudio xformers --index-url https://download.pytorch.org/whl/cu121
 if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
 
 echo pip install -r %~dp0requirements.txt
