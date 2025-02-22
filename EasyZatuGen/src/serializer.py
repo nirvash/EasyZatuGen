@@ -112,7 +112,7 @@ class Serializer:
                     if "download_url" in model:
                         model["path"] = os.path.join(Path.model_dir, model_name + ".safetensors")
                         messagebox.askyesno(None, l10n["dlg_download"].format(model["download_url"], model["path"]))
-                        cmd = f'curl -Lo {model["path"]} {model["download_url"]}'
+                        cmd = f'curl -kLo {model["path"]} {model["download_url"]}'
                         if "information_url" in model:
                             webbrowser.open(model["information_url"], new=1)
                         result = os.system(cmd)
@@ -140,7 +140,7 @@ class Serializer:
                         if "download_url" in lora:
                             lora["path"] = os.path.join(Path.lora_dir, lora_name + ".safetensors")
                             messagebox.askyesno(None, l10n["dlg_download"].format(lora["download_url"], lora["path"]))
-                            cmd = f'curl -Lo {lora["path"]} {lora["download_url"]}'
+                            cmd = f'curl -kLo {lora["path"]} {lora["download_url"]}'
                             if "information_url" in lora:
                                 webbrowser.open(lora["information_url"], new=1)
                             result = os.system(cmd)

@@ -106,7 +106,7 @@ class ModelMenu:
 
         def download_model(model_name, model):
             subprocess.run(["start", model["information_url"]], shell=True)
-            cmd = f"curl -Lo {model['path']} {model['download_url']} || pause"
+            cmd = f"curl -kLo {model['path']} {model['download_url']} || pause"
             result = subprocess.run(["start", "cmd", "/c", cmd], shell=True)  # 待たないので即成功
             if result.returncode == 0:
                 if model_name in self.sd["models"]:

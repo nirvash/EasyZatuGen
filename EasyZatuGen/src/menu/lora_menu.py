@@ -123,7 +123,7 @@ class LoraMenu:
             if "download_url" in lora:
                 if "information_url" in lora:
                     webbrowser.open(lora["information_url"], new=1)
-                result = os.system(f"curl -Lo {lora['path']} {lora['download_url']} || pause")
+                result = os.system(f"curl -kLo {lora['path']} {lora['download_url']} || pause")
                 if result == 0:
                     if lora_name in self.sd["loras"]:
                         self.sd["loras"].pop(lora_name)

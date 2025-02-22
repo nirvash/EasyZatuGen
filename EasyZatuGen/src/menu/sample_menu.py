@@ -22,7 +22,7 @@ class SampleMenu:
 
         if not self.ctx.cfg.easy_zatu_gen["confirm_nsfw"]:
             if messagebox.askyesno(message=self.ctx.l10n["dlg_confirm_nsfw"]):
-                os.system(f"curl -Lo {Path.sample_nsfw} https://yyy.wpx.jp/EasyZatuGen/config/sample_nsfw.json")
+                os.system(f"curl -kLo {Path.sample_nsfw} https://yyy.wpx.jp/EasyZatuGen/config/sample_nsfw.json")
             self.ctx.cfg.easy_zatu_gen["confirm_nsfw"] = True
 
         sample_json = None
