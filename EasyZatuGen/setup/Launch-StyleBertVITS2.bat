@@ -1,12 +1,19 @@
 @echo off
 chcp 65001 > NUL
-pushd %~dp0..\lib\Style-Bert-VITS2
 
-call venv\Scripts\activate.bat
-if %errorlevel% neq 0 ( pause & exit /b %errorlevel% )
+if not exist %~dp0..\..\Style-Bert-VITS2 (
+	echo [Error] Style-Bert-VITS2 がインストールされていません。
+	pause & exit /b 1
+)
 
-echo python server_fastapi.py
-python server_fastapi.py
-if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
+pushd %~dp0..\..\Style-Bert-VITS2
 
-popd rem %~dp0..\lib\Style-Bert-VITS2
+call %~dp0Setup-Venv.bat
+if %errorlevel% neq 0 ( popd & exit /b 1 )
+
+@REM --cpu
+echo python server_fastapi.py %*
+python server_fastapi.py %*
+if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
+
+popd

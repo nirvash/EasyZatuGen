@@ -1,108 +1,105 @@
 @echo off
 chcp 65001 > NUL
-pushd %~dp0..\lib
+set CURL_CMD=C:\Windows\System32\curl.exe -k
 set PS_CMD=PowerShell -Version 5.1 -ExecutionPolicy Bypass
-set CURL_CMD=C:\Windows\System32\curl.exe -k 
 
-@REM 2024-01-15
-set STYLE_BERT_VITS2_REV=972ec0e627976e928428e1902334a2dd591477ea
+echo call %~dp0SetGitPath.bat
+call %~dp0SetGitPath.bat
+if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
 
-if not exist Style-Bert-VITS2-%STYLE_BERT_VITS2_REV%\ (
-	%CURL_CMD% -Lo Style-Bert-VITS2.zip https://github.com/litagin02/Style-Bert-VITS2/archive/%STYLE_BERT_VITS2_REV%.zip
-	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
+pushd %~dp0..\..
+setlocal enabledelayedexpansion
 
-	%PS_CMD% Expand-Archive -Path Style-Bert-VITS2.zip -DestinationPath . -Force
-	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
-
-	del Style-Bert-VITS2.zip
-	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
-
-	xcopy /QSY Style-Bert-VITS2-%STYLE_BERT_VITS2_REV%\*.* Style-Bert-VITS2\
-	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
+if exist Style-Bert-VITS2\ (
+	echo git -C Style-Bert-VITS2 pull
+	git -C Style-Bert-VITS2 pull
+	if !errorlevel! neq 0 ( pause & popd & exit /b 1 )
+) else (
+	echo git clone https://github.com/litagin02/Style-Bert-VITS2
+	git clone https://github.com/litagin02/Style-Bert-VITS2
+	if !errorlevel! neq 0 ( pause & popd & exit /b 1 )
 )
-popd rem %~dp0..\lib
 
-pushd %~dp0..\lib\Style-Bert-VITS2
+pushd %~dp0..\..\Style-Bert-VITS2
+
 call %~dp0Setup-Venv.bat
+if %errorlevel% neq 0 ( popd & exit /b 1 )
 
-echo pip install -r requirements.txt
-pip install -r requirements.txt
-if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
+echo python -m pip install -q --upgrade pip
+python -m pip install -q --upgrade pip
+if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
 
+echo pip install -q torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install -q torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
+
+@REM https://fate.5ch.net/test/read.cgi/liveuranus/1711873736/545
+@REM Fix https://github.com/litagin02/Style-Bert-VITS2/commit/053a6bf78505e427489e341805442db20400117a
+@REM echo pip install -q gradio==4.23.0
+@REM pip install -q gradio==4.23.0
+@REM if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
+
+echo pip install -q -r requirements.txt
+pip install -q -r requirements.txt
+if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
+
+@REM ModuleNotFoundError: No module named 'GPUtil'
+echo pip install -q GPUtil
+pip install -q GPUtil
+if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
+
+echo python initialize.py
 python initialize.py
-if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
+if %errorlevel% neq 0 ( pause & popd & exit /b 1 )
 
-echo copy /Y %~dp0StyleBertVITS2-config.yml config.yml
-copy /Y %~dp0StyleBertVITS2-config.yml config.yml
-if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
+if not exist Server_cpu.bat (
+	echo copy %~dp0res\Server_cpu.bat .
+	copy %~dp0res\Server_cpu.bat .
+)
 
-set DOWNLOAD_DST=model_assets
+call :DL_HF_MODEL RinneAi/Rinne_Style-Bert-VITS2 model_assets/Rinne Rinne Rinne
+if %errorlevel% neq 0 ( popd & exit /b 1 )
 
-@REM 2024-01-15 2024-01-24 公開停止
-@REM call :DOWNLOAD Hilja Hilja_e300_s26480.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_okiba/resolve/main/model_assets/Hilja/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
+call :DL_HF_MODEL kaunista/kaunista-style-bert-vits2-models Anneli Anneli Anneli_e116_s32000
+if %errorlevel% neq 0 ( popd & exit /b 1 )
 
-@REM call :DOWNLOAD Ilona Ilona_e233_s18000.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_okiba/resolve/main/model_assets/Ilona-fixed/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
+call :DL_HF_MODEL kaunista/kaunista-style-bert-vits2-models Anneli-nsfw Anneli-nsfw Anneli-nsfw_e300_s5100
+if %errorlevel% neq 0 ( popd & exit /b 1 )
 
-@REM call :DOWNLOAD Kaisa Kaisa_e265_s27000.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_okiba/resolve/main/model_assets/Kaisa-fixed/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
+if not exist config.yml (
+	echo copy %~dp0res\config.yml .
+	copy %~dp0res\config.yml .
+)
 
-@REM call :DOWNLOAD Leena Leena_e181_s13000.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_okiba/resolve/main/model_assets/Leena/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
-
-@REM call :DOWNLOAD Liisa Liisa2-g2p_e221_s19000.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_okiba/resolve/main/model_assets/Liisa-fixed/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
-
-@REM call :DOWNLOAD Hilja-nsfw Hilja-nsfw_e300_s3900.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_nsfw/resolve/main/model_assets/Hilja-nsfw/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
-
-@REM call :DOWNLOAD Ilona-nsfw Ilona-nsfw_e400_s7200.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_nsfw/resolve/main/model_assets/Ilona-nsfw/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
-
-@REM call :DOWNLOAD Kaisa-nsfw Kaisa-nsfw_e189_s13000.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_nsfw/resolve/main/model_assets/Kaisa-nsfw/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
-
-@REM call :DOWNLOAD Liisa-nsfw Liisa-nsfw_e219_s14000.safetensors^
-@REM 	https://huggingface.co/litagin/style_bert_vits2_nsfw/resolve/main/model_assets/Liisa-nsfw/
-@REM if %errorlevel% neq 0 ( popd & exit /b %errorlevel% )
-
-popd rem %~dp0..\lib\Style-Bert-VITS2
+popd
 exit /b 0
 
-:DOWNLOAD
-set NAME=%1
-set FILE_NAME=%2
-set BASE_URL=%3
+:DL_HF_MODEL
+set HF_REP=%1
+set MODEL_DIR=%2
+set MODEL_NAME=%3
+set MODEL_SAFETENSORS=%4
 
-if not exist %DOWNLOAD_DST%\%NAME%\ (
-	mkdir %DOWNLOAD_DST%\%NAME%\
-	pushd %DOWNLOAD_DST%\%NAME%\
+if not exist model_assets\%MODEL_NAME% ( mkdir model_assets\%MODEL_NAME% )
 
-	echo %CURL_CMD% -Lo %FILE_NAME% %BASE_URL%%FILE_NAME%
-	%CURL_CMD% -Lo %FILE_NAME% %BASE_URL%%FILE_NAME%
-	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
-	timeout /t 1 /nobreak > NUL
-
-	echo %CURL_CMD% -Lo config.json %BASE_URL%config.json
-	%CURL_CMD% -Lo config.json %BASE_URL%config.json
-	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
-	timeout /t 1 /nobreak > NUL
-
-	echo %CURL_CMD% -Lo style_vectors.npy %BASE_URL%style_vectors.npy
-	%CURL_CMD% -Lo style_vectors.npy %BASE_URL%style_vectors.npy
-	if %errorlevel% neq 0 ( pause & popd & exit /b %errorlevel% )
-	timeout /t 1 /nobreak > NUL
-
-	popd rem %DOWNLOAD_DST%\%NAME%\
+setlocal enabledelayedexpansion
+if not exist model_assets\%MODEL_NAME%\%MODEL_NAME%.safetensors (
+	echo %CURL_CMD% -Lo model_assets\%MODEL_NAME%\%MODEL_NAME%.safetensors https://huggingface.co/%HF_REP%/resolve/main/%MODEL_DIR%/%MODEL_SAFETENSORS%.safetensors
+	%CURL_CMD% -Lo model_assets\%MODEL_NAME%\%MODEL_NAME%.safetensors https://huggingface.co/%HF_REP%/resolve/main/%MODEL_DIR%/%MODEL_SAFETENSORS%.safetensors
+	if !errorlevel! neq 0 ( pause & popd & exit /b 1 )
 )
+
+if not exist model_assets\%MODEL_NAME%\config.json (
+	echo %CURL_CMD% -Lo model_assets\%MODEL_NAME%\config.json https://huggingface.co/%HF_REP%/resolve/main/%MODEL_DIR%/config.json
+	%CURL_CMD% -Lo model_assets\%MODEL_NAME%\config.json https://huggingface.co/%HF_REP%/resolve/main/%MODEL_DIR%/config.json
+	if !errorlevel! neq 0 ( pause & popd & exit /b 1 )
+)
+
+if not exist model_assets\%MODEL_NAME%\style_vectors.npy (
+	echo %CURL_CMD% -Lo model_assets\%MODEL_NAME%\style_vectors.npy https://huggingface.co/%HF_REP%/resolve/main/%MODEL_DIR%/style_vectors.npy
+	%CURL_CMD% -Lo model_assets\%MODEL_NAME%\style_vectors.npy https://huggingface.co/%HF_REP%/resolve/main/%MODEL_DIR%/style_vectors.npy
+	if !errorlevel! neq 0 ( pause & popd & exit /b 1 )
+)
+endlocal
 
 exit /b 0
